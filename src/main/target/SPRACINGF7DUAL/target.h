@@ -106,6 +106,10 @@
     #define TARGET_USART_CONFIG
 #endif
 
+// TODO
+// #define USE_ESCSERIAL
+// #define ESCSERIAL_TIMER_TX_HARDWARE 0 // PWM 1
+
 #define USE_I2C
 #define USE_I2C_DEVICE_1
 #define I2C_DEVICE              (I2CDEV_1)

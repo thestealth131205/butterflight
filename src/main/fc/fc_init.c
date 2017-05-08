@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
 
 #include "platform.h"
 
@@ -244,7 +245,7 @@ void spiPreInit(void)
 #ifdef AK8963_CS_PIN
     spiPreInitCs(IO_TAG(AK8963_CS_PIN));
 #endif
-#if defined(RTC6705_CS_PIN)
+#ifdef RTC6705_CS_PIN
     spiPreInitCs(IO_TAG(RTC6705_CS_PIN));
 #endif
 #ifdef M25P16_CS_PIN
@@ -366,6 +367,10 @@ void init(void)
     delay(100);
 
     timerInit();  // timer must be initialized before any channel is allocated
+
+#ifdef TEST_SOUND
+    testSound();
+#endif
 
 #ifdef BUS_SWITCH_PIN
     busSwitchInit();

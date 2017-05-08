@@ -67,6 +67,7 @@ typedef struct gyroDev_s {
     float gyroADC[XYZ_AXIS_COUNT];                        // gyro data after calibration and alignment
     int32_t gyroADCRawPrevious[XYZ_AXIS_COUNT];
     int16_t gyroADCRaw[XYZ_AXIS_COUNT];
+    float gyroADCf[XYZ_AXIS_COUNT];
     int16_t temperature;
     mpuConfiguration_t mpuConfiguration;
     mpuDetectionResult_t mpuDetectionResult;
