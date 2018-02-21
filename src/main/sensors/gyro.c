@@ -372,7 +372,9 @@ static bool gyroInitSensor(gyroSensor_t *gyroSensor)
 #if defined(USE_GYRO_MPU6050) || defined(USE_GYRO_MPU3050) || defined(USE_GYRO_MPU6500) || defined(USE_GYRO_SPI_MPU6500) || defined(USE_GYRO_SPI_MPU6000) \
  || defined(USE_ACC_MPU6050) || defined(USE_GYRO_SPI_MPU9250) || defined(USE_GYRO_SPI_ICM20601) || defined(USE_GYRO_SPI_ICM20649) || defined(USE_GYRO_SPI_ICM20689)
 
-#if defined(MPU_INT_EXTI)
+#if defined(GYRO_1_EXTI_PIN)
+    gyroSensor->gyroDev.mpuIntExtiTag =  IO_TAG(GYRO_1_EXTI_PIN);
+#elif defined(MPU_INT_EXTI)
     gyroSensor->gyroDev.mpuIntExtiTag =  IO_TAG(MPU_INT_EXTI);
 #elif defined(USE_HARDWARE_REVISION_DETECTION)
     gyroSensor->gyroDev.mpuIntExtiTag =  selectMPUIntExtiConfigByHardwareRevision();
