@@ -221,12 +221,26 @@ void mpuGyroDmaSpiReadFinish(gyroDev_t * gyro)
     //spi rx dma callback
     #ifdef USE_GYRO_IMUF9001
     memcpy(&imufData, dmaRxBuffer, sizeof(imufData_t));
-    acc.accADC[X]    = imufData.accX * acc.dev.acc_1G;
-    acc.accADC[Y]    = imufData.accY * acc.dev.acc_1G;
-    acc.accADC[Z]    = imufData.accZ * acc.dev.acc_1G;
-    gyro->gyroADC[X] = imufData.gyroX;
-    gyro->gyroADC[Y] = imufData.gyroY;
-    gyro->gyroADC[Z] = imufData.gyroZ;
+    if(
+        (imufData.gyroX < -3000.0f) || (imufData.gyroX > 3000.0f) ||
+        (imufData.gyroY < -3000.0f) || (imufData.gyroY > 3000.0f) ||
+        (imufData.gyroZ < -3000.0f) || (imufData.gyroZ > 3000.0f) ||
+        (imufData.accX < -16.0f) || (imufData.accX > 16.0f) ||
+        (imufData.accY < -16.0f) || (imufData.accY > 16.0f) ||
+        (imufData.accZ < -16.0f) || (imufData.accZ > 16.0f)
+    )
+    {
+
+    }
+    else
+    {
+        acc.accADC[X]    = imufData.accX * acc.dev.acc_1G;
+        acc.accADC[Y]    = imufData.accY * acc.dev.acc_1G;
+        acc.accADC[Z]    = imufData.accZ * acc.dev.acc_1G;
+        gyro->gyroADC[X] = imufData.gyroX;
+        gyro->gyroADC[Y] = imufData.gyroY;
+        gyro->gyroADC[Z] = imufData.gyroZ;
+    }
     #else
     acc.dev.ADCRaw[X]   = (int16_t)((dmaRxBuffer[1] << 8)  | dmaRxBuffer[2]);
     acc.dev.ADCRaw[Y]   = (int16_t)((dmaRxBuffer[3] << 8)  | dmaRxBuffer[4]);
