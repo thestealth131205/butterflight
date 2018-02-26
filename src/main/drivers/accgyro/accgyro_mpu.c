@@ -212,7 +212,6 @@ bool mpuGyroDmaSpiReadStart(gyroDev_t * gyro)
     dmaTxBuffer[0] = MPU_RA_ACCEL_XOUT_H | 0x80;
     dmaSpiTransmitReceive(dmaTxBuffer, dmaRxBuffer, 15, 0);
     #endif
-    
     return true;
 }
 
@@ -340,7 +339,6 @@ static bool detectSPISensorsAndUpdateDetectionResult(gyroDev_t *gyro)
     #else
         #error IMUF9001 must use a RST pin (IMUF9001_RST_PIN)
     #endif
-    
     sensor = imuf9001SpiDetect(gyro);
     // some targets using MPU_9250_SPI, ICM_20608_SPI or ICM_20602_SPI state sensor is MPU_65xx_SPI
     if (sensor != MPU_NONE) {
