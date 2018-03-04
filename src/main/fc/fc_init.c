@@ -70,7 +70,6 @@
 #include "drivers/usb_io.h"
 #include "drivers/vtx_rtc6705.h"
 #include "drivers/vtx_common.h"
-#include "drivers/dma_spi.h"
 
 #include "fc/config.h"
 #include "fc/fc_init.h"

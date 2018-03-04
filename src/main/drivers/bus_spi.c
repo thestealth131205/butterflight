@@ -22,9 +22,6 @@
 #include <platform.h>
 
 #ifdef USE_SPI
-#ifndef GYRO_READ_TIMEOUT
-    #define GYRO_READ_TIMEOUT 20
-#endif
 
 #include "drivers/bus.h"
 #include "drivers/bus_spi.h"
@@ -32,8 +29,13 @@
 #include "drivers/exti.h"
 #include "drivers/io.h"
 #include "drivers/rcc.h"
+#ifdef USE_DMA_SPI_DEVICE
+#ifndef GYRO_READ_TIMEOUT
+    #define GYRO_READ_TIMEOUT 20
+#endif //GYRO_READ_TIMEOUT
 #include "drivers/dma_spi.h"
 #include "drivers/time.h"
+#endif //USE_DMA_SPI_DEVICE
 
 spiDevice_t spiDevice[SPIDEV_COUNT];
 
