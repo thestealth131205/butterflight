@@ -108,6 +108,7 @@ void resetPidProfile(pidProfile_t *pidProfile)
         .dterm_notch_hz = 260,
         .dterm_notch_cutoff = 160,
         .dterm_filter_type = FILTER_PT1,
+        .dterm_filter_style = KD_FILTER_BF,
         .itermWindupPointPercent = 50,
         .vbatPidCompensation = 0,
         .pidAtMinThrottle = PID_STABILISATION_ON,
@@ -510,11 +511,33 @@ void pidController(const pidProfile_t *pidProfile, const rollAndPitchTrims_t *an
         if (axis != FD_YAW) {
             // apply filters
             float gyroRateFiltered = dtermNotchFilterApplyFn(dtermFilterNotch[axis], gyroRate);
-            gyroRateFiltered = dtermLpfApplyFn(dtermFilterLpf[axis], gyroRateFiltered);
+            if (pidProfile->dterm_filter_style == KD_FILTER_BF)
+            {
+                gyroRateFiltered = dtermLpfApplyFn(dtermFilterLpf[axis], gyroRateFiltered);
+            }
 
             const float rD = dynCd * MIN(getRcDeflectionAbs(axis) * relaxFactor, 1.0f) * currentPidSetpoint - gyroRateFiltered;    // cr - y
-            // Divide rate change by deltaT to get differential (ie dr/dt)
-            float delta = (rD - previousRateError[axis]) / deltaT;
+            
+            float delta;
+            float iDT = 1.0f/deltaT; //divide once
+
+            switch (pidProfile->dterm_filter_style) {
+                case KD_FILTER_BF:
+                    delta = (rD - previousRateError[axis]) * iDT;
+                    break;
+                case KD_FILTER_CORRECT_WSP:
+                    //filter Kd properly along with sp
+                    delta = dtermLpfApplyFn(dtermFilterLpf[axis], (rD - previousRateError[axis]) * iDT );
+                    break;
+                case KD_FILTER_CORRECT_WOSP:
+                    //filter Kd properly, don't filter sp
+                    delta = (rD * iDT) - dtermLpfApplyFn(dtermFilterLpf[axis], (previousRateError[axis] * iDT) );
+                    break;
+                case KD_FILTER_CORRECT_NOSP:
+                    //filter Kd properly, no sp
+                    delta = dtermLpfApplyFn(dtermFilterLpf[axis], (previousRateError[axis] * iDT) );
+                    break;
+            }
 
             previousRateError[axis] = rD;
 
