@@ -517,6 +517,7 @@ void pidController(const pidProfile_t *pidProfile, const rollAndPitchTrims_t *an
             }
 
             const float rD = dynCd * MIN(getRcDeflectionAbs(axis) * relaxFactor, 1.0f) * currentPidSetpoint - gyroRateFiltered;    // cr - y
+            const float pureRD = dynCd * MIN(getRcDeflectionAbs(axis) * relaxFactor, 1.0f) * getSetpointRate(axis) - gyroRateFiltered;    // cr - y
             
             float delta;
             float iDT = 1.0f/deltaT; //divide once
@@ -524,22 +525,19 @@ void pidController(const pidProfile_t *pidProfile, const rollAndPitchTrims_t *an
             switch (pidProfile->dterm_filter_style) {
                 case KD_FILTER_BF:
                     delta = (rD - previousRateError[axis]) * iDT;
+                    previousRateError[axis] = rD;
                     break;
-                case KD_FILTER_CORRECT_WSP:
+                case KD_FILTER_CORRECT_SP:
                     //filter Kd properly along with sp
                     delta = dtermLpfApplyFn(dtermFilterLpf[axis], (rD - previousRateError[axis]) * iDT );
-                    break;
-                case KD_FILTER_CORRECT_WOSP:
-                    //filter Kd properly, don't filter sp
-                    delta = (rD * iDT) - dtermLpfApplyFn(dtermFilterLpf[axis], (previousRateError[axis] * iDT) );
+                    previousRateError[axis] = rD;
                     break;
                 case KD_FILTER_CORRECT_NOSP:
                     //filter Kd properly, no sp
-                    delta = dtermLpfApplyFn(dtermFilterLpf[axis], (previousRateError[axis] * iDT) );
+                    delta = dtermLpfApplyFn(dtermFilterLpf[axis], (pureRD - previousRateError[axis]) * iDT );
+                    previousRateError[axis] = pureRD;
                     break;
             }
-
-            previousRateError[axis] = rD;
 
             // if crash recovery is on and accelerometer enabled and there is no gyro overflow, then check for a crash
             // no point in trying to recover if the crash is so severe that the gyro overflows

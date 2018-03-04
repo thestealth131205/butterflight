@@ -250,7 +250,7 @@ static const char * const lookupTableLowpassType[] = {
 };
 
 static const char * const lookupTableKdStyle[] = {
-    "KD_FILTER_BF", "KD_FILTER_CORRECT_WSP", "KD_FILTER_CORRECT_WOSP", "KD_FILTER_CORRECT_NOSP"
+    "KD_FILTER_BF", "KD_FILTER_CORRECT_SP", "KD_FILTER_CORRECT_NOSP"
 };
 
 static const char * const lookupTableFailsafe[] = {

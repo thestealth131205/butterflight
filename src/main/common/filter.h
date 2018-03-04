@@ -71,8 +71,7 @@ typedef enum {
 
 typedef enum {
     KD_FILTER_BF = 0,
-    KD_FILTER_CORRECT_WSP,
-    KD_FILTER_CORRECT_WOSP,
+    KD_FILTER_CORRECT_SP,
     KD_FILTER_CORRECT_NOSP,
 } kdFilterStyle_e;
 
